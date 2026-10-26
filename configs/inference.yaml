@@ -1,0 +1,10 @@
+includes: [paths.yaml]
+project: {task: mrixfields2026_task3, stage: inference}
+paths:
+  checkpoint: ${paths.artifacts_root}/exported/paired_ema.pt
+  input_root: ${paths.inference_input_root}
+  output_root: ${paths.artifacts_root}/inference_outputs
+  inference_manifest: ${paths.artifacts_root}/inference_manifest.json
+  package_root: ${paths.artifacts_root}/packages
+inference: {precision: bf16, batch_size: 16, resume: true}
+package: {zip_name: task3.zip, z_crop: [150, 180]}

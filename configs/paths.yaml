@@ -1,0 +1,9 @@
+paths:
+  task_root: /root/autodl-tmp/UNSB_real_final/task3
+  raw_data_root: /root/autodl-tmp/data/Training_data/release_20260414
+  slices_root: /root/autodl-tmp/data/Slices
+  inference_input_root: /root/autodl-tmp/data/Validating_prospective-encrypt/Validating_prospective
+  logs_root: ${paths.task_root}/logs
+  artifacts_root: ${paths.task_root}/artifacts
+  manifests_root: ${paths.task_root}/manifests
+

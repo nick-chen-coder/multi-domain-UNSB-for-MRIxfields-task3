@@ -1,0 +1,64 @@
+includes: [paths.yaml]
+project: {task: mrixfields2026_task3, task_name: unsb, lab: audited_unpaired_30k, stage: B}
+paths:
+  train_npz_roots: ['${paths.slices_root}/all_slices_train/retrospective']
+  preprocessing: ${paths.slices_root}/preprocessing_config.json
+  checkpoint_dir: ${paths.artifacts_root}/weights/unsb
+  log_dir: ${paths.logs_root}/unsb
+data:
+  shape: [368, 448]
+  model_padding: {top: 8, bottom: 8, value: -1.0}
+  modalities: [T1W, T2W, T2FLAIR]
+  fields: [0.1T, 1.5T, 3T, 5T, 7T]
+  class_probabilities: {core: 0.65, edge: 0.30, background: 0.05}
+  sampling: uniform_modality_source_field_volume_slice_then_other_target_field
+  target_same_z: true
+  target_class_unrestricted: true
+  mine_b_same_condition: true
+  mine_b_different_source_volume: true
+  workers: 4
+bridge:
+  steps: 5
+  times: [0.0, 0.50, 0.74, 0.86, 0.94, 1.0]
+  tau: 0.01
+  batch_shared_step: true
+  history_no_grad: true
+  independent_history_noise: true
+model:
+  generator: {name: GatedResidualUNet, encoder_channels: [64, 128, 256, 512, 512], bottleneck_blocks: 2, condition_dim: 64, skip_connections: gated_additive_4_level, full_resolution_skip: false, image_residual: false, initial_gate_bias: -2.0, output_norm: target_field_conditioned_adain}
+  discriminator: {name: Discriminator, down_blocks: 7, hidden_dim: 512, domain_heads: 15, projection_condition: [step, position]}
+  mine: {name: MineEstimator, resize: [192, 224], output_shape: [1, 21, 25], condition_dim: 256}
+patchnce: {levels: 5, projection_dim: 256, max_patches: 256, temperature: 0.07, negatives: within_image, source_key_detach: true, identity_branch: false}
+mine: {subtract_log_batch: true, subtract_log_spatial: true, force_fp32: true, quadratic_stabilizer: true, positive_quadratic_weight: 1.0}
+asp:
+  mode: legacy
+  mask_threshold: 0.015
+  mask_scale: 0.005
+  output_scale: 0.02
+  foreground_threshold: 0.8
+  background_threshold: 0.1
+  tolerance_pixels: 3.0
+  gate_gamma: 1.0
+  presence_epsilon: 1.0
+loss: {lambda_adv: 1.0, lambda_sb: 1.0, lambda_nce: 1.0, lambda_asp: 1.0, lambda_r1: 1.0}
+training:
+  seed: 20260809
+  generator_steps: 30000
+  precision: bf16
+  batch_size: 4
+  gradient_accumulation: 1
+  gradient_clip: {G: 5.0, D: 10.0, T: 10.0, P: 5.0}
+  log_preclip_grad_norm: true
+  update_order: [D, T, G_P, EMA]
+  logical_epoch_steps: 2000
+optimizer:
+  G: {type: Adam, lr: 0.0001, min_lr: 0.00002, betas: [0.0, 0.99], eps: 1.0e-8, weight_decay: 0.0}
+  D: {type: Adam, lr: 0.0001, min_lr: 0.00002, betas: [0.0, 0.99], eps: 1.0e-8, weight_decay: 0.0}
+  T: {type: Adam, lr: 0.00001, min_lr: 0.000002, betas: [0.0, 0.99], eps: 1.0e-8, weight_decay: 0.0}
+  P: {type: Adam, lr: 0.0001, min_lr: 0.00002, betas: [0.0, 0.99], eps: 1.0e-8, weight_decay: 0.0}
+scheduler: {type: constant_then_cosine, constant_steps: 12000, cosine_steps: 18000, min_lr: 0.00002}
+ema: {decay: 0.999}
+checkpoint: {interval: 2000, milestone_interval: 10000, keep_latest: true, save_optimizer: true, save_rng: true}
+stability: {thresholds_enabled: false, max_abs_entropy: 1000.0, max_abs_loss_t: 1000000.0, max_grad_norm_t: 100000.0, consecutive_steps: 5}
+reproducibility: {exact_resume: true, deterministic_preflight: true}
+audit: {metrics_jsonl: '${paths.logs_root}/unsb/metrics.jsonl', validation_status: NOT_PERFORMED_NO_AUTHORIZED_PAIRED_GROUND_TRUTH}

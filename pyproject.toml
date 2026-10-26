@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mrixfields-unsb"
+version = "0.1.0"
+description = "MRIxFields 2026 Task 3 conditional Schrödinger bridge pipeline"
+requires-python = ">=3.12"
+dependencies = [
+  "nibabel>=5.4",
+  "numpy>=2.0",
+  "omegaconf>=2.3",
+  "lpips==0.1.4",
+  "psutil>=7.0",
+  "PyYAML>=6.0",
+  "scipy>=1.14",
+  "torch>=2.12",
+  "torchvision>=0.27",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3"]
+
+[tool.setuptools.packages.find]
+include = ["mrixfields_unsb*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

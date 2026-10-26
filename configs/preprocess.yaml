@@ -1,0 +1,19 @@
+includes: [paths.yaml]
+preprocessing:
+  seed: 20260809
+  source_shape: [364, 436, 364]
+  padded_shape: [368, 448]
+  padding: {top: 2, bottom: 2, left: 6, right: 6, value: 0.0}
+  prospective_subjects: ['0006', '0007', '0009']
+  workers: 4
+  compression: false
+  foreground:
+    threshold: volume_finite_p99_9
+    minimum_threshold: 0.01
+    percentile_scale: 0.02
+    core_minimum: 0.25
+    edge_minimum: 0.02
+  retrospective_reserved_quotas:
+    T1W: {0.1T: 5, 1.5T: 5, 3T: 7, 5T: 6, 7T: 12}
+    T2W: {0.1T: 5, 1.5T: 11, 3T: 7, 5T: 3, 7T: 4}
+    T2FLAIR: {0.1T: 5, 1.5T: 11, 3T: 7, 5T: 5, 7T: 4}

@@ -1,0 +1,18 @@
+includes: [paths.yaml]
+project: {task: mrixfields2026_task3, task_name: paired, lab: audited_l1_lpips_20k, stage: D}
+paths:
+  train_npz_roots: ['${paths.slices_root}/all_slices_train/prospective']
+  stage_b_final: ${paths.artifacts_root}/weights/unsb/final.pt
+  checkpoint_dir: ${paths.artifacts_root}/weights/paired
+  log_dir: ${paths.logs_root}/paired
+data: {train_subjects: ['0006', '0007', '0009'], class_probabilities: {core: 0.65, edge: 0.30, background: 0.05}, directions: 60, paired_same_subject_modality_z: true, workers: 4}
+bridge: {steps: 5, times: [0.0, 0.50, 0.74, 0.86, 0.94, 1.0], deterministic: true, full_bptt: true}
+model: {generator: GatedResidualUNet, initialization: unsb_ema, skip_connections: gated_additive_4_level}
+loss: {lambda_l1: 1.0, lambda_lpips: 0.1, lpips_backbone: alex, grayscale_repeat_channels: 3}
+training: {seed: 20260809, optimizer_steps: 20000, precision: bf16, effective_batch: 4, micro_batch: 2, accumulation_steps: 2, gradient_checkpoint: false, gradient_clip: 5.0, log_preclip_grad_norm: true, logical_epoch_steps: 2500}
+optimizer: {type: Adam, lr: 0.00003, betas: [0.5, 0.999], eps: 1.0e-8, weight_decay: 0.0}
+scheduler: {type: warmup_constant_cosine, start_lr: 0.00001, warmup_steps: 500, constant_until_step: 5000, min_lr: 0.000003}
+ema: {decay: 0.999}
+checkpoint: {interval: 2500, milestone_interval: 5000, save_rng: true}
+reproducibility: {exact_resume: true, deterministic_preflight: true}
+audit: {metrics_jsonl: '${paths.logs_root}/paired/metrics.jsonl', validation_status: NOT_PERFORMED_NO_AUTHORIZED_PAIRED_GROUND_TRUTH}
