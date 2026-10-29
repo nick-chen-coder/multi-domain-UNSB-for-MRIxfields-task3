@@ -1,6 +1,0 @@
-MODALITIES = ("T1W", "T2W", "T2FLAIR")
-FIELDS = ("0.1T", "1.5T", "3T", "5T", "7T")
-VOLUME_SHAPE = (364, 436, 364)
-BRIDGE_TIMES = (0.0, 0.50, 0.74, 0.86, 0.94, 1.0)
-TAU_SB = 0.01
-

@@ -1,0 +1,5 @@
+2026-09-05 01:54:50,129 - [INFO] - file-loading - program ['python', '-m', 'pytest', '-q'] started at 1788544489.71, audit logger1 inited, ./audit-logs/file-loading_8873_20260905_015450.log | 7b863a9f76b217f3
+2026-09-05 01:54:50,130 - [INFO] - file-loading - 1432, 4096, 10563039 | d863018b04a22b0e
+2026-09-05 01:54:50,130 - [INFO] - file-loading - file-loading v1.0.0 e3556818607788b0 | fb9f1b89e429f2d5
+2026-09-05 01:54:50,130 - [INFO] - file-loading - Official dataset, /root/autodl-tmp/UNSB_real_final/task3/code/mrixfields_unsb/data/io.py, b561eb45c426225b | adb43fcf3a1f5101
+2026-09-05 01:54:51,364 - [INFO] - file-loading - 1788544491.3577754 loading [8873, 8870, '/usr/bin/bash-8870'] 1788544491.363982, /tmp/pytest-of-root/pytest-11/test_plain_npz_schema_and_valu0/R_T1W_0.1T_0001_z0165_core.npz, 330516, 993562a0f8331cc7d75cb534eabe9c47, [4116, 4670.43, 544432128, 519.21, 4352872448, 4151.22, [8192, 29807865], [['/root/miniconda3/bin/python3.12', 8873, 544432128, 4352872448, 8192, 4116, 29807865]]] | 1692e4e2aa91614b
