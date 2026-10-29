@@ -13,31 +13,7 @@ scripts/             Python command-line entry points
 sh/                  Workflow scripts
 tests/               Existing core tests
 submission/          Manifest-driven final Docker inference implementation
-manifests/           Public copies of data-split and preprocessing records
-data-split.md        Training subsets, reserved volumes and model selection
 ```
-
-The source code from the audit package's `task3/code/` directory is stored directly at this repository root. For example, audit path `code/configs/train_unsb.yaml` corresponds to repository path `configs/train_unsb.yaml`.
-
-## Data split and model selection
-
-Unpaired training used 1,842 official retrospective volumes from 1,029 subjects; paired fine-tuning used 45 prospective volumes from subjects 0006, 0007 and 0009. Another 97 retrospective volumes retained an earlier reserved split and were used for neither training nor validation of the present method.
-
-See [data-split.md](data-split.md) for the complete data-use and model-selection description, and [manifests/](manifests/) for the public volume lists and preprocessing records. Public manifest paths are relative; the original local audit materials are unchanged.
-
-## Final model weights
-
-The final EMA checkpoint is available as a release attachment:
-
-- [UID 47 final-model release](https://github.com/nick-chen-coder/multi-domain-UNSB-for-MRIxfields-task3/releases/tag/uid47-final)
-- [Download paired_ema.pt](https://github.com/nick-chen-coder/multi-domain-UNSB-for-MRIxfields-task3/releases/download/uid47-final/paired_ema.pt) (151,603,859 bytes)
-- [SHA256SUMS](https://github.com/nick-chen-coder/multi-domain-UNSB-for-MRIxfields-task3/releases/download/uid47-final/SHA256SUMS)
-
-```text
-8dcc749a314aa85070271c04cb21d5f72e18935c5fc84f1116097f9f083996eb  paired_ema.pt
-```
-
-For the training-code inference workflow, save the checkpoint as `exported/paired_ema.pt` under your configured `paths.artifacts_root`. This is the same checkpoint stored as `/app/model/final.pt` in the final submitted Docker image. The release checkpoint contains the inference EMA generator rather than a complete optimizer checkpoint for resuming training.
 
 ## Environment
 
@@ -119,7 +95,7 @@ docker run --rm --gpus all \
   docker.synapse.org/syn76892337/task3:v2
 ```
 
-Input and output directories must follow the official manifest layout. Model weights are distributed in the submitted image and as a release attachment. The Git history contains code, configurations, documentation and data manifests; MRI datasets, generated predictions, binary checkpoints and audit logs are not stored in the Git tree.
+Input and output directories must follow the official manifest layout. Model weights are distributed in the submitted image; datasets, generated predictions, training checkpoints and audit logs are not stored in this Git repository.
 
 The image checkpoint `/app/model/final.pt` and the audit export `paired_ema.pt` have the same SHA256:
 
